@@ -14,6 +14,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
-# Default: run the web server
-# Override CMD for celery worker service
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers", "2", "--timeout", "120", "run:app"]
+# Copy and set up entrypoint
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# SERVICE_TYPE=worker runs celery, anything else runs gunicorn
+CMD ["/entrypoint.sh"]
